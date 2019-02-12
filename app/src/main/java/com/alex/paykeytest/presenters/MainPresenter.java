@@ -41,6 +41,10 @@ public class MainPresenter extends Presenter<MainView> {
 
 	}
 
+	public boolean isLoading() {
+		return isLoading;
+	}
+
 	private void onLoaded(MainResponse response) {
 		isLoading = false;
 		view.hideLoading();

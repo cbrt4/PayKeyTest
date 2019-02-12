@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 			public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
 
-				if (isSearching) {
+				if (isSearching || mainPresenter.isLoading()) {
 					return;
 				}
 
