@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
 	@Override
 	public void update(List<MovieItem> element) {
-		if (currentPage == 1) {
+		if (currentPage == 1 || isSearching) {
 			mainAdapter.setMovieItems(element);
 			mainAdapter.notifyDataSetChanged();
 		} else {
