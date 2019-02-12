@@ -75,7 +75,7 @@ public class MovieActivity extends AppCompatActivity implements MovieView {
 	public void update(MovieDetails movieDetails) {
 		GlideApp.with(this)
 				.load(UrlStorage.IMAGE_URL + movieDetails.getBackdropPath())
-				.centerInside()
+				.centerCrop()
 				.transition(DrawableTransitionOptions.withCrossFade(100))
 				.into(backdropView);
 
