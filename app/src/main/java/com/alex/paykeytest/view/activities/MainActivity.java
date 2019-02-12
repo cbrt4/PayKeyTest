@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
 	private int currentPage = 1;
 	private int itemsToLoad = 10;
+	private boolean isSearching;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 			public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 				super.onScrolled(recyclerView, dx, dy);
 
+				if (isSearching) {
+					return;
+				}
+
 				int difference = mainAdapter.getItemCount() - itemsToLoad;
 				int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
@@ -81,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
+				isSearching = true;
+
 				if (query.length() > 2) {
 					search(query);
 				}
@@ -89,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
 			@Override
 			public boolean onQueryTextChange(String query) {
+				isSearching = true;
+
 				if (query.length() > 2) {
 					search(query);
 				}
@@ -97,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 		});
 
 		searchView.setOnCloseListener(() -> {
+			isSearching = false;
 			currentPage = 1;
 			mainPresenter.loadMovies(currentPage);
 			return false;
