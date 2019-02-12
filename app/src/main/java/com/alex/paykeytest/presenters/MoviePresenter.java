@@ -16,6 +16,7 @@ public class MoviePresenter extends Presenter<MovieView> {
 
 	public void loadMovieDetails(String id) {
 		if (!isLoading) {
+			view.showLoading();
 			isLoading = true;
 			disposable = ApiRequestServiceProvider.apiRequestService()
 					.getMovieDetails(id, UrlStorage.API_KEY, UrlStorage.LANGUAGE)

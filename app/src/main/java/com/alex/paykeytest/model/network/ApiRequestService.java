@@ -1,14 +1,14 @@
 package com.alex.paykeytest.model.network;
 
-import com.alex.paykeytest.model.dto.MovieDetails;
 import com.alex.paykeytest.model.dto.MainResponse;
+import com.alex.paykeytest.model.dto.MovieDetails;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ApiRequestService  {
+public interface ApiRequestService {
 
 	@GET(UrlStorage.MOVIES)
 	Observable<MainResponse> getMovies(

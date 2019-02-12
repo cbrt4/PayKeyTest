@@ -10,7 +10,7 @@ public class UrlStorage {
 	static final String BASE_URL = "https://api.themoviedb.org/3/";
 	static final String MOVIES = "movie/popular";
 	static final String SEARCH = "search/movie";
-	static final String MOVIE_DETAILS = "movie/{"+ ID +"}";
+	static final String MOVIE_DETAILS = "movie/{" + ID + "}";
 
 	static final String KEY_API_KEY = "api_key";
 	static final String KEY_LANGUAGE = "language";
