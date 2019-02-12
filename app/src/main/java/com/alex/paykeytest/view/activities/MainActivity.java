@@ -2,10 +2,13 @@ package com.alex.paykeytest.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alex.paykeytest.R;
@@ -22,9 +25,13 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
 	private SearchView searchView;
 	private RecyclerView mainRecyclerView;
+	private ProgressBar mainProgressBar;
 	private MainAdapter mainAdapter;
 
 	private MainPresenter mainPresenter;
+
+	private int currentPage = 1;
+	private int itemsToLoad = 10;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +41,39 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 		setupViews();
 
 		mainPresenter = new MainPresenter(this);
-		mainPresenter.loadMovies();
-
+		mainPresenter.loadMovies(currentPage);
 	}
 
 	private void setupViews() {
 		setupRecyclerView();
 		setupSearchView();
+		setupProgressBar();
 	}
 
 	private void setupRecyclerView() {
+		LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
 		mainAdapter = new MainAdapter(this);
-
 		mainRecyclerView = findViewById(R.id.main_recycler_view);
-		mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+		mainRecyclerView.setLayoutManager(layoutManager);
 		mainRecyclerView.setAdapter(mainAdapter);
+		mainRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+			@Override
+			public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+				super.onScrolled(recyclerView, dx, dy);
+
+				int difference = mainAdapter.getItemCount() - itemsToLoad;
+				int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+				if (lastVisibleItem > difference) {
+					currentPage++;
+					mainPresenter.loadMovies(currentPage);
+				}
+			}
+		});
+	}
+
+	private void setupProgressBar() {
+		mainProgressBar = findViewById(R.id.main_progress);
 	}
 
 	private void setupSearchView() {
@@ -72,7 +97,8 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 		});
 
 		searchView.setOnCloseListener(() -> {
-			mainPresenter.loadMovies();
+			currentPage = 1;
+			mainPresenter.loadMovies(currentPage);
 			return false;
 		});
 	}
@@ -83,18 +109,23 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
 	@Override
 	public void showLoading() {
-
+		mainProgressBar.setVisibility(View.VISIBLE);
 	}
 
 	@Override
 	public void hideLoading() {
-
+		mainProgressBar.setVisibility(View.GONE);
 	}
 
 	@Override
 	public void update(List<MovieItem> element) {
-		mainAdapter.setMovieItems(element);
-		mainAdapter.notifyDataSetChanged();
+		if (currentPage == 1) {
+			mainAdapter.setMovieItems(element);
+			mainAdapter.notifyDataSetChanged();
+		} else {
+			mainAdapter.getMovieItems().addAll(element);
+			mainAdapter.notifyItemRangeInserted(mainAdapter.getMovieItems().size() - element.size(), element.size());
+		}
 	}
 
 	@Override
@@ -112,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 	protected void onDestroy() {
 		super.onDestroy();
 
-		mainPresenter.cancel();
+		mainRecyclerView.clearOnScrollListeners();
+		mainPresenter.dispose();
 	}
 }

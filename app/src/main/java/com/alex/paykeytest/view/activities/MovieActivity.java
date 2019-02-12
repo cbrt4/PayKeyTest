@@ -2,12 +2,14 @@ package com.alex.paykeytest.view.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alex.paykeytest.R;
 import com.alex.paykeytest.model.dto.MovieDetails;
-import com.alex.paykeytest.model.dto.ProductionCountry;
 import com.alex.paykeytest.model.network.UrlStorage;
 import com.alex.paykeytest.presenters.MoviePresenter;
 import com.alex.paykeytest.util.GlideApp;
@@ -21,6 +23,7 @@ public class MovieActivity extends AppCompatActivity implements MovieView {
 	private TextView countriesView;
 	private TextView taglineView;
 	private TextView descriptionView;
+	private ProgressBar progressBar;
 
 	private MoviePresenter moviePresenter;
 
@@ -41,6 +44,7 @@ public class MovieActivity extends AppCompatActivity implements MovieView {
 		setupCountriesView();
 		setupTaglineView();
 		setupDescriptionView();
+		setupProgressBar();
 	}
 
 	private void setupBackdropView() {
@@ -63,11 +67,15 @@ public class MovieActivity extends AppCompatActivity implements MovieView {
 		descriptionView = findViewById(R.id.description);
 	}
 
+	private void setupProgressBar() {
+		progressBar = findViewById(R.id.movie_progress);
+	}
+
 	@Override
 	public void update(MovieDetails movieDetails) {
 		GlideApp.with(this)
 				.load(UrlStorage.IMAGE_URL + movieDetails.getBackdropPath())
-				.centerCrop()
+				.centerInside()
 				.transition(DrawableTransitionOptions.withCrossFade(100))
 				.into(backdropView);
 
@@ -84,16 +92,23 @@ public class MovieActivity extends AppCompatActivity implements MovieView {
 
 	@Override
 	public void showLoading() {
-
+		progressBar.setVisibility(View.VISIBLE);
 	}
 
 	@Override
 	public void hideLoading() {
-
+		progressBar.setVisibility(View.GONE);
 	}
 
 	@Override
 	public void reportError(String errorMessage) {
+		Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		moviePresenter.dispose();
 	}
 }

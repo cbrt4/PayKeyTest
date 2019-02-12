@@ -15,23 +15,28 @@ public class MoviePresenter extends Presenter<MovieView> {
 	}
 
 	public void loadMovieDetails(String id) {
-		disposable = ApiRequestServiceProvider.apiRequestService()
-				.getMovieDetails(id, UrlStorage.API_KEY, "en-US")
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(this::onLoaded, this::onError);
+		if (!isLoading) {
+			isLoading = true;
+			disposable = ApiRequestServiceProvider.apiRequestService()
+					.getMovieDetails(id, UrlStorage.API_KEY, UrlStorage.LANGUAGE)
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(this::onLoaded, this::onError);
+		}
 	}
 
 	private void onLoaded(MovieDetails movieDetails) {
+		isLoading = false;
 		view.hideLoading();
 		view.update(movieDetails);
-		disposable.dispose();
+		dispose();
 	}
 
 	private void onError(Throwable error) {
+		isLoading = false;
 		view.hideLoading();
 		view.reportError(error.getLocalizedMessage());
-		disposable.dispose();
+		dispose();
 	}
 
 }

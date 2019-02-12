@@ -1,5 +1,6 @@
 package com.alex.paykeytest.presenters;
 
+import com.alex.paykeytest.model.dto.MainResponse;
 import com.alex.paykeytest.model.dto.MovieItem;
 import com.alex.paykeytest.model.network.ApiRequestServiceProvider;
 import com.alex.paykeytest.model.network.UrlStorage;
@@ -16,31 +17,39 @@ public class MainPresenter extends Presenter<MainView> {
 		super(view);
 	}
 
-	public void loadMovies() {
-		disposable = ApiRequestServiceProvider.apiRequestService()
-				.getMovies(UrlStorage.API_KEY, "en-US", 1)
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(response -> onLoaded(response.getResults()), this::onError);
+	public void loadMovies(int pageIndex) {
+		if (!isLoading){
+			isLoading = true;
+			disposable = ApiRequestServiceProvider.apiRequestService()
+					.getMovies(UrlStorage.API_KEY, UrlStorage.LANGUAGE, pageIndex)
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(this::onLoaded, this::onError);
+		}
 	}
 
 	public void searchMovies(String searchQuery) {
-		disposable = ApiRequestServiceProvider.apiRequestService()
-				.searchMovies(UrlStorage.API_KEY, "en-US", searchQuery, false)
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(response -> onLoaded(response.getResults()), this::onError);
+		if (!isLoading){
+			isLoading = true;
+			disposable = ApiRequestServiceProvider.apiRequestService()
+					.searchMovies(UrlStorage.API_KEY, UrlStorage.LANGUAGE, searchQuery, false)
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(this::onLoaded, this::onError);
+		}
 	}
 
-	private void onLoaded(List<MovieItem> movieItems) {
+	private void onLoaded(MainResponse response) {
+		isLoading = false;
 		view.hideLoading();
-		view.update(movieItems);
-		disposable.dispose();
+		view.update(response.getResults());
+		dispose();
 	}
 
 	private void onError(Throwable error) {
+		isLoading = false;
 		view.hideLoading();
 		view.reportError(error.getLocalizedMessage());
-		disposable.dispose();
+		dispose();
 	}
 }

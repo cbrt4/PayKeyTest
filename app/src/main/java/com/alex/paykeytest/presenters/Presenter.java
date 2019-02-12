@@ -8,12 +8,13 @@ public abstract class Presenter<V extends BaseView> {
 
 	V view;
 	Disposable disposable;
+	boolean isLoading;
 
 	Presenter(V view) {
 		this.view = view;
 	}
 
-	public void cancel() {
+	public void dispose() {
 		if (disposable != null && !disposable.isDisposed()) {
 			disposable.dispose();
 		}

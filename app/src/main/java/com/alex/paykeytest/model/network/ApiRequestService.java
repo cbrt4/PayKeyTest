@@ -12,23 +12,23 @@ public interface ApiRequestService  {
 
 	@GET(UrlStorage.MOVIES)
 	Observable<MainResponse> getMovies(
-			@Query(UrlStorage.KEY) String key,
-			@Query(UrlStorage.LANG) String lang,
-			@Query(UrlStorage.PAGE) int pageIndex
+			@Query(UrlStorage.KEY_API_KEY) String apiKey,
+			@Query(UrlStorage.KEY_LANGUAGE) String language,
+			@Query(UrlStorage.KEY_PAGE) int pageIndex
 	);
 
 	@GET(UrlStorage.SEARCH)
 	Observable<MainResponse> searchMovies(
-			@Query(UrlStorage.KEY) String key,
-			@Query(UrlStorage.LANG) String lang,
-			@Query(UrlStorage.QUERY) String queryString,
-			@Query(UrlStorage.INCLUDE_ADULT) boolean includeAdult
+			@Query(UrlStorage.KEY_API_KEY) String apiKey,
+			@Query(UrlStorage.KEY_LANGUAGE) String language,
+			@Query(UrlStorage.KEY_QUERY) String queryString,
+			@Query(UrlStorage.KEY_INCLUDE_ADULT) boolean includeAdult
 	);
 
 	@GET(UrlStorage.MOVIE_DETAILS)
 	Observable<MovieDetails> getMovieDetails(
 			@Path(UrlStorage.ID) String id,
-			@Query(UrlStorage.KEY) String key,
-			@Query(UrlStorage.LANG) String lang
+			@Query(UrlStorage.KEY_API_KEY) String apiKey,
+			@Query(UrlStorage.KEY_LANGUAGE) String language
 	);
 }

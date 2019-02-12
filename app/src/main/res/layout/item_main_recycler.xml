@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:paddingStart="@dimen/edges_padding"
+    android:paddingEnd="@dimen/edges_padding">
 
     <ImageView
         android:id="@+id/movie_poster"
@@ -15,7 +17,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:padding="8dp"
-        android:src="@mipmap/ic_launcher"
         tools:ignore="ContentDescription" />
 
     <LinearLayout
@@ -35,26 +36,20 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:paddingBottom="4dp"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
-            android:textStyle="bold"
-            tools:text="UserName" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/movie_popularity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
-            tools:text="UserID" />
+            android:textSize="20sp" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/edges_padding"
-        android:layout_marginEnd="@dimen/edges_padding"
         android:background="@color/colorPrimary" />
 </RelativeLayout>
