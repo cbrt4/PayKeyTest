@@ -19,4 +19,8 @@ public abstract class Presenter<V extends BaseView> {
 			disposable.dispose();
 		}
 	}
+
+	public boolean isLoading() {
+		return isLoading;
+	}
 }
